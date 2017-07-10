@@ -319,7 +319,7 @@ namespace LargeTextFilesSorting
             {
                 if (_comparer.Compare(first.Value.LastPart, second.Value.FirstPart) > 0)
                 {
-                    first = SortChunksByStringPart(first, second);
+                    first = SortChunks(first, second);
                 }
                 else
                 {
@@ -408,7 +408,7 @@ namespace LargeTextFilesSorting
             Console.WriteLine($"{DateTime.Now}. Added new chunks. Chunks count: {_linkedlist.Count}");
         }
 
-        private LinkedListNode<ChunkInfoItem> SortChunksByStringPart(LinkedListNode<ChunkInfoItem> first, LinkedListNode<ChunkInfoItem> second)
+        private LinkedListNode<ChunkInfoItem> SortChunks(LinkedListNode<ChunkInfoItem> first, LinkedListNode<ChunkInfoItem> second)
         {
             var parts = new List<StringNumberPart>();
 
