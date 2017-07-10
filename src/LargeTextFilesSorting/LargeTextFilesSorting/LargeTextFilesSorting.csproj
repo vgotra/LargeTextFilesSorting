@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RangePlace.cs" />
     <Compile Include="SortingManager.cs" />
     <Compile Include="ChunkInfoItem.cs" />
     <Compile Include="StringNumberPart.cs" />

@@ -13,7 +13,7 @@ namespace LargeTextFilesSorting
         // Do not change it to bigger size without checking code thinking - possible outofmemory exception on creation of very big buffer for sorting for output file
         // tested that 32mb in memory chunks will not help much (maybe only in case of usage of DDR4 or other faster memory types) - the most optimal cases - from 4 to 8 mb - but such cases will touch IO (a lot of chunks on file system)
         // anyway - we don't have a silver bullet here - so for files with less file size we will use less size of memory chunks (faster sorting) - for 10 gb - the most optimal case from 4 to 8 Mb
-        private const int AllowedCountOfFileLinesToSortInMemory = 1024 * 1024 * 4;
+        private const int AllowedCountOfFileLinesToSortInMemory = 1024 * 1024 * 2;
 
         // needed for spliting file to chunks and temporary results
         private const int FreeSpaceMultiplier = 3;
@@ -277,37 +277,99 @@ namespace LargeTextFilesSorting
 
         private void ProcessInitialLinePart(StringNumberPart linePart)
         {
-            foreach (var listNode in EnumerateNodes(_linkedlist))
+            var node = _linkedlist.First;
+
+            while (node != null)
             {
-                var listItem = listNode.Value;
+                var chunkInfoItem = node.Value;
 
-                var range = listItem.IsInRange(linePart, AllowedCountOfFileLinesToSortInMemory, _comparer);
+                var compareToFirst = _comparer.Compare(linePart, chunkInfoItem.FirstPart);
+                var compareToLast = _comparer.Compare(linePart, chunkInfoItem.LastPart);
 
-                if (!_listOfCurrentItemsToProcess.Contains(listItem))
+                //if (compareToFirst < 0 && compareToLast < 0)
+                //{
+                //    // add node before
+                //    var newBeforeChunkInfo = new ChunkInfoItem();
+                //    newBeforeChunkInfo.Buffer.Add(linePart);
+                //    newBeforeChunkInfo.FirstPart = linePart;
+                //    newBeforeChunkInfo.LastPart = linePart;
+
+                //    _linkedlist.AddBefore(node, newBeforeChunkInfo);
+                //    AddCurrentItemIfNotExist(newBeforeChunkInfo);
+                //    return;
+                //}
+
+                //if (compareToFirst == 0 && compareToLast < 0)
+                //{
+                //    chunkInfoItem.Buffer.Add(linePart);
+                //    chunkInfoItem.FirstPart = linePart;
+                //    AddCurrentItemIfNotExist(chunkInfoItem);
+                //    return;
+                //}
+
+                // will not create a lot of small chunks with unsorted data(more time to sort and merge) - hard to say - what will be better - depends on input data
+                if ((compareToFirst == 0 && compareToLast < 0) || (compareToFirst < 0 && compareToLast < 0))
                 {
-                    _listOfCurrentItemsToProcess.Add(listItem);
+                    chunkInfoItem.Buffer.Add(linePart);
+                    chunkInfoItem.FirstPart = linePart;
+                    AddCurrentItemIfNotExist(chunkInfoItem);
+                    return;
                 }
 
-                switch (range)
+                // item in 
+                if (compareToFirst > 0 && compareToLast < 0)
                 {
-                    case RangePlace.FirstItem:
-                        listItem.Buffer.Add(linePart);
-                        listItem.FirstPart = linePart;
-                        return; 
-                    case RangePlace.MiddleItem:
-                        listItem.Buffer.Add(linePart);
-                        return; 
-                    case RangePlace.LastItem:
-                        listItem.Buffer.Add(linePart);
-                        listItem.LastPart = linePart;
-                        return; 
+                    chunkInfoItem.Buffer.Add(linePart);
+                    AddCurrentItemIfNotExist(chunkInfoItem);
+                    return;
                 }
+
+                if (compareToLast == 0 && compareToFirst > 0)
+                {
+                    chunkInfoItem.Buffer.Add(linePart);
+                    chunkInfoItem.LastPart = linePart;
+                    AddCurrentItemIfNotExist(chunkInfoItem);
+                    return;
+                }
+
+                // this will help to rechecking and resorting already sorted chunks 
+                if (compareToFirst > 0 && compareToLast > 0)
+                {
+                    if (node.Next == null)
+                    {
+                        // end of list - last node
+                        var newAfterChunkInfo = new ChunkInfoItem();
+                        newAfterChunkInfo.Buffer.Add(linePart);
+                        newAfterChunkInfo.FirstPart = linePart;
+                        newAfterChunkInfo.LastPart = linePart;
+
+                        _linkedlist.AddAfter(node, newAfterChunkInfo);
+                        AddCurrentItemIfNotExist(newAfterChunkInfo);
+                        return;
+                    }
+                    else
+                    {
+                        // check next node
+                        node = node.Next;
+                        continue;
+                    }
+                }
+                
+                node = node.Next;
             }
         }
 
         private bool ShouldStartProcessingOfMemoryData()
         {
             return _listOfCurrentItemsToProcess.Max(x => x.Buffer.Count) >= AllowedCountOfFileLinesToSortInMemory;
+        }
+
+        private void AddCurrentItemIfNotExist(ChunkInfoItem chunkInfoItem)
+        {
+            if (!_listOfCurrentItemsToProcess.Contains(chunkInfoItem))
+            {
+                _listOfCurrentItemsToProcess.Add(chunkInfoItem);
+            }
         }
 
         private void ProcessWrongOrderOfChunks()
@@ -405,7 +467,7 @@ namespace LargeTextFilesSorting
             File.Delete(node.Value.StringFilePath);
             File.Delete(node.Value.NumberFilePath);
 
-            Console.WriteLine($"{DateTime.Now}. Added new chunks. Chunks count: {_linkedlist.Count}");
+            Console.WriteLine($"{DateTime.Now}. Processed buffer and split chunk to two new. Chunks count: {_linkedlist.Count}");
         }
 
         private LinkedListNode<ChunkInfoItem> SortChunks(LinkedListNode<ChunkInfoItem> first, LinkedListNode<ChunkInfoItem> second)
