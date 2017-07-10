@@ -14,6 +14,7 @@ namespace LargeTextFilesSorting.Utils
 
             var standardLines = needTotalLinesCount * (10 - countOfDuplicateString) / 10;
             var duplicateLines = (needTotalLinesCount - standardLines) / countOfDuplicateString;
+            needTotalLinesCount = standardLines * countOfDuplicateString;
 
             Console.WriteLine($"{DateTime.Now}. File generator: Selected size: {testFileSize}, standard lines count: {standardLines}, duplicate lines count: {duplicateLines * countOfDuplicateString}");
 
@@ -35,7 +36,7 @@ namespace LargeTextFilesSorting.Utils
 
                     if (countOfLines % linesCountProgressToInform == 0)
                     {
-                        Console.WriteLine($"{DateTime.Now}. File generator: Generated count of lines: {countOfLines}");
+                        Console.WriteLine($"{DateTime.Now}. File generator: Generated count of lines: {countOfLines} / {needTotalLinesCount}");
                     }
                 }
 
@@ -54,7 +55,7 @@ namespace LargeTextFilesSorting.Utils
 
                         if (countOfLines % linesCountProgressToInform == 0)
                         {
-                            Console.WriteLine($"{DateTime.Now}. File generator: Generated count of lines: {countOfLines}");
+                            Console.WriteLine($"{DateTime.Now}. File generator: Generated count of lines: {countOfLines} / {needTotalLinesCount}");
                         }
                     }
                 }

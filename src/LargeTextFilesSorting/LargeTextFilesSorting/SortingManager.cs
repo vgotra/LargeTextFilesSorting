@@ -13,7 +13,8 @@ namespace LargeTextFilesSorting
         // Do not change it to bigger size without checking code thinking - possible outofmemory exception on creation of very big buffer for sorting for output file
         // tested that 32mb in memory chunks will not help much (maybe only in case of usage of DDR4 or other faster memory types) - the most optimal cases - from 4 to 8 mb - but such cases will touch IO (a lot of chunks on file system)
         // anyway - we don't have a silver bullet here - so for files with less file size we will use less size of memory chunks (faster sorting) - for 10 gb - the most optimal case from 4 to 8 Mb
-        private const int AllowedCountOfFileLinesToSortInMemory = 1024 * 1024 * 2;
+        private const int AllowedCountOfFileLinesToSortInMemory = 1024 * 1024 * 4;
+        private const int AllowedMaxCountOfLinesInAllBuffers = AllowedCountOfFileLinesToSortInMemory * 4;
 
         // needed for spliting file to chunks and temporary results
         private const int FreeSpaceMultiplier = 3;
@@ -361,7 +362,7 @@ namespace LargeTextFilesSorting
 
         private bool ShouldStartProcessingOfMemoryData()
         {
-            return _listOfCurrentItemsToProcess.Max(x => x.Buffer.Count) >= AllowedCountOfFileLinesToSortInMemory;
+            return _listOfCurrentItemsToProcess.Sum(x => x.Buffer.Count) >= AllowedMaxCountOfLinesInAllBuffers || _listOfCurrentItemsToProcess.Max(x => x.Buffer.Count) >= AllowedCountOfFileLinesToSortInMemory;
         }
 
         private void AddCurrentItemIfNotExist(ChunkInfoItem chunkInfoItem)
@@ -557,6 +558,8 @@ namespace LargeTextFilesSorting
 
         private void JoinChunksToOutputFile()
         {
+            const int linesCountProgressToInform = 1000 * 1000 * 5;
+            
             using (var writer = new StreamWriter(_outputFilePath))
             {
                 // there possible preloading of buffers
@@ -569,6 +572,11 @@ namespace LargeTextFilesSorting
                     {
                         writer.WriteLine(numberItems[i] + ". " + stringItems[i]);
                         _outputCountOfLines++;
+
+                        if (_outputCountOfLines % linesCountProgressToInform == 0)
+                        {
+                            Console.WriteLine($"{DateTime.Now}. Processed count of initial lines: {_outputCountOfLines} / {_initialCountOfLines}");
+                        }
                     }
                }
             }
