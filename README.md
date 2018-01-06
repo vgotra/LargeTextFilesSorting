@@ -66,6 +66,12 @@ msbuild LargeTextFilesSorting.sln
 #### How to run 
 
 * Run app without arguments to get help 
-* Generation (default 100Mb file), sorting and checking can be executed with command: LargeTestFilesSorting.Console.exe -g -r -c
-* To run basic performance tests for memory and file system: LargeTestFilesSorting.Console.exe -t
-* To specify detailed arguments for generation or other flags use format: -g=Gb1 or -g=Gb10, etc
+* Generation (default 100Mb file), sorting and checking can be executed with command: 
+``` shell
+dotnet run --configuration Release --generate --run --check
+```
+* To run basic performance tests for memory and file system: 
+``` shell
+dotnet run --configuration Release --perftest
+```
+* To specify detailed arguments for generation or other flags use format: --generate=Gb1 or --generate=Gb10, etc

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LargeTextFilesSorting", "LargeTextFilesSorting\LargeTextFilesSorting\LargeTextFilesSorting.csproj", "{9062E9B3-6DEF-477A-946E-C6BA2D80695B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LargeTextFilesSorting.Console", "LargeTextFilesSorting\LargeTextFilesSorting.Console\LargeTextFilesSorting.Console.csproj", "{B4A7E829-7B78-4E55-9ED4-3CB7D37DD5B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LargeTextFilesSorting.Utils", "LargeTextFilesSorting\LargeTextFilesSorting.Utils\LargeTextFilesSorting.Utils.csproj", "{0D80B574-2A59-4FEF-9545-8E430704980A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9062E9B3-6DEF-477A-946E-C6BA2D80695B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9062E9B3-6DEF-477A-946E-C6BA2D80695B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9062E9B3-6DEF-477A-946E-C6BA2D80695B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9062E9B3-6DEF-477A-946E-C6BA2D80695B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4A7E829-7B78-4E55-9ED4-3CB7D37DD5B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4A7E829-7B78-4E55-9ED4-3CB7D37DD5B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4A7E829-7B78-4E55-9ED4-3CB7D37DD5B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4A7E829-7B78-4E55-9ED4-3CB7D37DD5B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D80B574-2A59-4FEF-9545-8E430704980A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D80B574-2A59-4FEF-9545-8E430704980A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D80B574-2A59-4FEF-9545-8E430704980A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D80B574-2A59-4FEF-9545-8E430704980A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
