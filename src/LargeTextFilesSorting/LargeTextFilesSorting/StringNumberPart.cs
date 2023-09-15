@@ -1,17 +1,13 @@
-using System.Diagnostics;
+namespace LargeTextFilesSorting;
 
-namespace LargeTextFilesSorting
+public struct StringNumberPart
 {
-    [DebuggerDisplay("String={StringPart}, Number={NumberPart}")]
-    public struct StringNumberPart
+    public StringNumberPart(string stringPart, string numberPart)
     {
-        public StringNumberPart(string stringPart, string numberPart)
-        {
-            StringPart = stringPart;
-            NumberPart = numberPart;
-        }
-
-        public string StringPart;
-        public string NumberPart;
+        StringPart = stringPart;
+        NumberPart = numberPart;
     }
+
+    public readonly string StringPart;
+    public readonly string NumberPart;
 }
